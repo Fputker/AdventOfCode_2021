@@ -1,18 +1,11 @@
-import java.io.File
 import java.lang.Exception
-
-fun readInputIntoListOfString(filePath: String): List<String> {
-    val input: MutableList<String> = mutableListOf()
-    File(filePath).forEachLine { input.add(it) }
-    return input
-}
 
 fun parseInstruction(instruction: String): Pair<String, Int> {
     val (direction, quantity) = instruction.split(' ')
     return Pair(direction, quantity.toInt())
 }
 
-fun executeInstruction(instruction: Pair<String, Int>): Pair<Int, Int> {
+fun executePartOneInstruction(instruction: Pair<String, Int>): Pair<Int, Int> {
     return when (instruction.first) {
         "forward" -> instruction.second to 0
         "down" -> 0 to instruction.second
@@ -22,14 +15,26 @@ fun executeInstruction(instruction: Pair<String, Int>): Pair<Int, Int> {
 }
 
 fun processPartOneInstructions() {
-    val instructions =
-        readInputIntoListOfString("/Users/fputker/Ideaprojects/AdventOfCode_2021/src/main/kotlin/input/day2.txt")
+    val instructions = readInput("day2")
     val output = instructions.map { parseInstruction(it) }
         .fold(0 to 0) { position, instruction ->
-            position.first + executeInstruction(instruction).first to
-                    position.second + executeInstruction(instruction).second
+            position.first + executePartOneInstruction(instruction).first to
+                    position.second + executePartOneInstruction(instruction).second
         }
-    println("The final position = " + output.first * output.second)
+    println("The final position of part 1 = " + output.first * output.second)
+}
+
+fun processPartTwoInstructions(){
+    val instructions = readInput("day2")
+    var position: Triple<Int,Int,Int> = Triple(0,0,0)
+    for (instruction in instructions){
+        when(instruction[0]){
+            'f' -> {position = getNewPositionUsingForwardinstruction(instruction, position)}
+            'd' -> {position = getNewPositionUsingDowninstruction(instruction, position)}
+            'u' -> {position = getNewPositionUsingUpinstruction(instruction, position)}
+        }
+    }
+    println("The final position of part 2 = " + position.first * position.third)
 }
 
 fun getNewPositionUsingForwardinstruction(instruction: String, position: Triple<Int, Int, Int>): Triple<Int, Int, Int> {
@@ -49,18 +54,7 @@ fun getNewPositionUsingUpinstruction(instruction: String, position: Triple<Int, 
 
 fun main() {
     processPartOneInstructions()
-//    val instructions =
-//        readInputIntoListOfString("/Users/fputker/Ideaprojects/AdventOfCode_2021/src/main/kotlin/input/day2.txt")
-//    var position: Triple<Int,Int,Int> = Triple(0,0,0)
-//    for (instruction in instructions){
-//        when(instruction[0]){
-//            'f' -> {position = getNewPositionUsingForwardinstruction(instruction, position)}
-//            'd' -> {position = getNewPositionUsingDowninstruction(instruction, position)}
-//            'u' -> {position = getNewPositionUsingUpinstruction(instruction, position)}
-//        }
-//    }
-//    println("The final answer is: " + position.first * position.third)
-
+    processPartTwoInstructions()
 }
 
 class Position(triple: Triple<Int, Int, Int>) {
