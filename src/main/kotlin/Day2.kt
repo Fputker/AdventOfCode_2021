@@ -10,7 +10,7 @@ fun directionToNumber(direction: String): Int {
     return "\\d".toRegex().find(direction)?.value.toString().toInt()
 }
 
-fun main() {
+fun simpleDirections(){
     val directions =
         readInputIntoListOfString("/Users/fputker/Ideaprojects/AdventOfCode_2021/src/main/kotlin/input/day2.txt")
 
@@ -27,6 +27,12 @@ fun main() {
     up.forEach { upNumbers.add(directionToNumber(it) * -1) }
 
     println( "the answer is : " + forwardNumbers.sum() * ( downNumbers.sum() + upNumbers.sum()))
+}
 
+fun processDirection(direction: String, position: Triple<Int,Int,Int>): Triple<Int,Int,Int>{
+    return Triple(0,0,0)
+}
 
+fun main() {
+    simpleDirections()
 }
