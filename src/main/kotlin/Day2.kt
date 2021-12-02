@@ -6,53 +6,54 @@ fun readInputIntoListOfString(filePath: String): List<String> {
     return input
 }
 
-fun directionToNumber(direction: String): Int {
-    return "\\d".toRegex().find(direction)?.value.toString().toInt()
+fun parseInstruction(instruction: String): Pair<String, Int> {
+    val (direction, quantity) = instruction.split(' ')
+    return Pair(direction, quantity.toInt())
 }
 
-fun simpleDirections(){
-    val directions =
+fun simpleinstructions(){
+    val instructions =
         readInputIntoListOfString("/Users/fputker/Ideaprojects/AdventOfCode_2021/src/main/kotlin/input/day2.txt")
 
-    val forward = directions.filter { it.contains("forward") }
-    val down = directions.filter { it.contains("down") }
-    val up = directions.filter { it.contains("up") }
+    val forward = instructions.filter { it.contains("forward") }
+    val down = instructions.filter { it.contains("down") }
+    val up = instructions.filter { it.contains("up") }
 
     val forwardNumbers: MutableList<Int> = mutableListOf()
     val downNumbers: MutableList<Int> = mutableListOf()
     val upNumbers: MutableList<Int> = mutableListOf()
 
-    forward.forEach { forwardNumbers.add(directionToNumber(it)) }
-    down.forEach { downNumbers.add(directionToNumber(it)) }
-    up.forEach { upNumbers.add(directionToNumber(it) * -1) }
+    forward.forEach { forwardNumbers.add(parseInstruction(it).second) }
+    down.forEach { downNumbers.add(parseInstruction(it).second) }
+    up.forEach { upNumbers.add(parseInstruction(it).second * -1)  }
 
     println( "the answer is : " + forwardNumbers.sum() * ( downNumbers.sum() + upNumbers.sum()))
 }
 
-fun getNewPositionUsingForwardDirection(direction: String, position: Triple<Int,Int,Int>): Triple<Int,Int,Int>{
-    val value = directionToNumber(direction)
+fun getNewPositionUsingForwardinstruction(instruction: String, position: Triple<Int,Int,Int>): Triple<Int,Int,Int>{
+    val value = parseInstruction(instruction).second
     return Triple(position.first+value,position.second,position.third + (position.second * value) )
 }
 
-fun getNewPositionUsingDownDirection(direction: String, position: Triple<Int,Int,Int>): Triple<Int,Int,Int>{
-    val value = directionToNumber(direction)
+fun getNewPositionUsingDowninstruction(instruction: String, position: Triple<Int,Int,Int>): Triple<Int,Int,Int>{
+    val value = parseInstruction(instruction).second
     return Triple(position.first,position.second + value,position.third)
 }
 
-fun getNewPositionUsingUpDirection(direction: String, position: Triple<Int,Int,Int>): Triple<Int,Int,Int>{
-    val value = directionToNumber(direction)
+fun getNewPositionUsingUpinstruction(instruction: String, position: Triple<Int,Int,Int>): Triple<Int,Int,Int>{
+    val value = parseInstruction(instruction).second
     return Triple(position.first,position.second - value,position.third)
 }
 
 fun main() {
-    val directions =
+    val instructions =
         readInputIntoListOfString("/Users/fputker/Ideaprojects/AdventOfCode_2021/src/main/kotlin/input/day2.txt")
     var position: Triple<Int,Int,Int> = Triple(0,0,0)
-    for (direction in directions){
-        when(direction[0]){
-            'f' -> {position = getNewPositionUsingForwardDirection(direction, position)}
-            'd' -> {position = getNewPositionUsingDownDirection(direction, position)}
-            'u' -> {position = getNewPositionUsingUpDirection(direction, position)}
+    for (instruction in instructions){
+        when(instruction[0]){
+            'f' -> {position = getNewPositionUsingForwardinstruction(instruction, position)}
+            'd' -> {position = getNewPositionUsingDowninstruction(instruction, position)}
+            'u' -> {position = getNewPositionUsingUpinstruction(instruction, position)}
         }
     }
     println("The final answer is: " + position.first * position.third)
