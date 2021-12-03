@@ -33,4 +33,9 @@ internal class Day3KtTest {
         )
     }
 
+    @Test
+    fun `given 001 when isBitinposition`(){
+
+    }
+
 }
