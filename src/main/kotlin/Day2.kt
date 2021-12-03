@@ -1,5 +1,7 @@
 import java.lang.Exception
 
+private const val day2 = "day2"
+
 fun parseInstruction(instruction: String): Pair<String, Int> {
     val (direction, quantity) = instruction.split(' ')
     return Pair(direction, quantity.toInt())
