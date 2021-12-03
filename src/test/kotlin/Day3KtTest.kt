@@ -5,12 +5,10 @@ internal class Day3KtTest {
     @Test
     fun `given 123 and 123 when transpose expect 11 22 33`() {
         assert(
-            transpose(arrayOf(intArrayOf(1, 2, 3), intArrayOf(1, 2, 3))).contentEquals(
-                arrayOf(
-                    intArrayOf(1, 1),
-                    intArrayOf(2, 2),
-                    intArrayOf(3, 3)
-                )
+            transpose(listOf(listOf(1, 2, 3), listOf(1, 2, 3))) == listOf(
+                listOf(1, 1),
+                listOf(2, 2),
+                listOf(3, 3)
             )
         )
     }
@@ -18,7 +16,7 @@ internal class Day3KtTest {
     @Test
     fun `given 123456789012 when transpose expect 1 2 3 4 5 6 7 8 9 0 1 2`() {
         assert(
-            createTwelveLists(listOf("123456789012")) == mutableListOf(
+            transpose(listOf(listOf("123456789012"))) == mutableListOf(
                 mutableListOf(1),
                 mutableListOf(2),
                 mutableListOf(3),
@@ -61,6 +59,8 @@ internal class Day3KtTest {
             "00010",
             "01010"
         )
+
+
         assert(determineMostCommonBits(input) == listOf(1,0,1,1,0))
     }
 
