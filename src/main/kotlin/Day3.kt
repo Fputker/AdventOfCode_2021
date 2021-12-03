@@ -1,4 +1,3 @@
-import java.math.BigInteger
 import java.util.stream.IntStream.range
 
 private const val day3 = "day3"
@@ -7,12 +6,33 @@ private const val day3 = "day3"
 // calculate total -> transform to binary
 // then get resulting bits and convert to Int
 
-//fun transpose(input: MutableList<MutableList<Int>>): MutableList<MutableList<Int>>{
-//    for (i in range(0, input[0].size)){
-//        input.let
-//    }
-//    return mutableListOf(mutableListOf())
-//}
+fun transpose(input: Array<IntArray>): Array<IntArray> {
+    display(input)
+    val columnCount = input[0].size
+    println("columnCount = $columnCount")
+    val rowCount = input.size
+    println("rowCount = $rowCount")
+
+    val transpose = Array(columnCount) {IntArray(rowCount)}
+    for (i in 0..rowCount - 1) {
+        for (j in 0..columnCount - 1) {
+            transpose[j][i] = input[i][j]
+        }
+    }
+    display(transpose)
+    return transpose
+}
+
+
+fun display(matrix: kotlin.Array<IntArray>) {
+    println("The matrix is: ")
+    for (row in matrix) {
+        for (column in row) {
+            print("$column    ")
+        }
+        println()
+    }
+}
 
 fun createTwelveLists(input: List<String>): List<List<Int>> {
     input.map { s -> s.toCharArray() }
@@ -56,17 +76,46 @@ private fun part1() {
 private fun part2() {
     val input = readInput(day3)
     val arrayOfMostCommonBits = determineMostCommonBits(input)
-    println(arrayOfMostCommonBits)
+    println(" most common bits are $arrayOfMostCommonBits")
 
-    println(input.map { s -> s.toCharArray().map { it.digitToInt() } })
+    var inputAsIntArray = input.map { s -> s.toCharArray().map { it.digitToInt() } } as MutableList<List<Int>>
 
+    var i = 0
+    for (bit in arrayOfMostCommonBits) {
+        println("bit=$bit")
+        println("i=$i")
+        inputAsIntArray = inputAsIntArray.filter { isBitInPosition(it, bit, i) } as MutableList<List<Int>>
+        i += 1
+        println(inputAsIntArray)
+    }
+
+    val leastCommon = determineLeastCommonBits(input)
+    println(" least common bits are $leastCommon")
+    var leastCommonAsIntArray = input.map { s -> s.toCharArray().map { it.digitToInt() } } as MutableList<List<Int>>
+    var j = 0
+    for (bit in leastCommon) {
+        println("bit=$bit")
+        println("j=$j")
+        leastCommonAsIntArray =
+            leastCommonAsIntArray.filter { it -> isBitInPosition(it, bit, j) } as MutableList<List<Int>>
+        j += 1
+        println(leastCommonAsIntArray)
+    }
+
+    val oxygen = "000100011011".toInt(2)
+    val co2 = "000100011011".toInt(2)
+    println(" answer to part two is $oxygen times $co2 = ${oxygen * co2}")
 }
 
-private fun determineMostCommonBits(input: List<String>) = createTwelveLists(input)
+fun determineMostCommonBits(input: List<String>) = createTwelveLists(input)
     .map { it.sum() }
-    .map { if (it > input.size / 2) 1 else 0 }
+    .map { if (it >= input.size / 2) 1 else 0 }
 
-private fun isBitInPosition(listToCheck: List<Int>, bit: Int, position: Int): Boolean {
+fun determineLeastCommonBits(input: List<String>) = createTwelveLists(input)
+    .map { it.sum() }
+    .map { if (it <= input.size / 2) 0 else 1 }
+
+fun isBitInPosition(listToCheck: List<Int>, bit: Int, position: Int): Boolean {
     return (listToCheck[position] == bit)
 }
 
