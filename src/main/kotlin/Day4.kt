@@ -5,13 +5,16 @@ Step 2 determine when board wins (remove matching ints and check for empty rows?
 step 3 find first winning board
 step 4 calculate score of board
 */
-fun readBoardsFromInput(input: List<String>): MutableList<MutableList<MutableList<Int>>> {
-    val boards = mutableListOf(mutableListOf(mutableListOf<Int>()))
-    val i=0
+fun readBoardsFromInput(input: List<String>): List<List<List<Int>>> {
+    val boards = mutableListOf(listOf(listOf<Int>()))
+    var i=0
+    var j=0
     while (i < input.size - 1) {
-       val  board = createBingoBoard( input)
+       val board = createBingoBoard(input.subList(i,i+5))
+        boards.add(board)
+        i += 6
     }
-    return boards
+    return boards.drop(1)
 }
 
 fun createBingoBoard(

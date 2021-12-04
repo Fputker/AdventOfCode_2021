@@ -30,7 +30,7 @@ internal class Day4KtTest {
     }
 
     @Test
-    fun `readBoardsFromInput`() {
+    fun `readmultipleBoardsFromInput`() {
         val input = listOf(
             "50 83  3 31 16",
             "47  9 94 10 86",
@@ -46,18 +46,18 @@ internal class Day4KtTest {
         )
         val expect = listOf(
             listOf(
-                listOf(99, 96, 20, 35, 21),
-                listOf(38, 17, 48, 69, 68),
-                listOf(9, 51, 32, 52, 11),
-                listOf(67, 8, 42, 89, 27),
-                listOf(39, 62, 66, 72, 43)
-            ),
-            listOf(
                 listOf(50, 83, 3, 31, 16),
                 listOf(47, 9, 94, 10, 86),
                 listOf(61, 22, 53, 46, 74),
                 listOf(77, 41, 79, 55, 62),
                 listOf(97, 78, 43, 73, 40)
+            ),
+            listOf(
+                listOf(99, 96, 20, 35, 21),
+                listOf(38, 17, 48, 69, 68),
+                listOf(9, 51, 32, 52, 11),
+                listOf(67, 8, 42, 89, 27),
+                listOf(39, 62, 66, 72, 43)
             )
         )
         assertEquals(expect, readBoardsFromInput(input))
