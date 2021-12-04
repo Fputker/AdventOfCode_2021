@@ -17,7 +17,7 @@ fun executePartOneInstruction(instruction: Pair<String, Int>): Pair<Int, Int> {
 }
 
 fun processPartOneInstructions() {
-    val instructions = readInput("day2")
+    val instructions = readInput(day2)
     val output = instructions.map { parseInstruction(it) }
         .fold(0 to 0) { position, instruction ->
             position.first + executePartOneInstruction(instruction).first to
@@ -36,7 +36,7 @@ fun executePartTwoInstruction(instruction: Pair<String, Int>, position: Triple<I
 }
 
 fun processPartTwoInstructions(){
-    val instructions = readInput("day2")
+    val instructions = readInput(day2)
     val result = instructions.map { parseInstruction(it) }
         .fold(Triple(0,0,0)) {
             position, instruction -> executePartTwoInstruction(instruction, position)
