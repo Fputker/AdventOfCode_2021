@@ -1,5 +1,3 @@
-import java.util.Collections.sort
-
 /*
 * 1 read strings from file, split strings into two sets of coordinates
 * 2 filter for sets that have matching x or y
@@ -10,7 +8,7 @@ import java.util.Collections.sort
 
 fun main() {
     val listOfStrings = readInput("day5")
-    println(day5part1(listOfStrings))
+    println("the answer for part 2 = ${day5part1(listOfStrings)}")
 }
 
 fun day5part1(input: List<String>): Int {
@@ -39,12 +37,13 @@ data class Line(var coordinates: MutableList<Pair<Int, Int>>) {
     init {
         if (coordinates[0].first.equals(coordinates[1].first)) {
             coordinates.sortBy { it.second }
-            drawHorizontalLine()
+            drawVerticalLine()
         } else if (coordinates[0].second.equals(coordinates[1].second)) {
             coordinates.sortBy { it.first }
-            drawVerticalLine()
-        } else if (coordinates[0].first + coordinates[0].second == coordinates[1].first + coordinates[1].second) {
+            drawHorizontalLine()
+        } else if (isDiagonal()) {
             coordinates.sortBy { it.first }
+            drawDiagonal()
         }
     }
 
@@ -53,17 +52,17 @@ data class Line(var coordinates: MutableList<Pair<Int, Int>>) {
     }
 
     fun isDiagonal(): Boolean {
-        return ((coordinates[0].equals(coordinates[1]) == false) && ((coordinates[0].first + coordinates[0].second == coordinates[1].first + coordinates[1].second) || (coordinates[0].first == coordinates[0].second && coordinates[1].first == coordinates[1].second)))
+        return (!coordinates[0].equals(coordinates[1]) && ((coordinates[0].first + coordinates[0].second == coordinates[1].first + coordinates[1].second) || (coordinates[0].first == coordinates[0].second && coordinates[1].first == coordinates[1].second) || coordinates[0].first - coordinates[0].second == coordinates[1].first - coordinates[1].second))
     }
 
-    fun drawHorizontalLine() {
+    fun drawVerticalLine() {
         for (i in coordinates[0].second + 1 until coordinates[1].second) {
             val newPair = Pair(coordinates[0].first, i)
             coordinates.add(newPair)
         }
     }
 
-    fun drawVerticalLine() {
+    fun drawHorizontalLine() {
         for (i in coordinates[0].first + 1 until coordinates[1].first) {
             val newPair = Pair(i, coordinates[0].second)
             coordinates.add(newPair)
@@ -71,14 +70,30 @@ data class Line(var coordinates: MutableList<Pair<Int, Int>>) {
     }
 
     fun drawDiagonal() {
-        for (i in coordinates[0].first + 1 until coordinates[1].first) {
-            for (j in coordinates[0].second + 1 until coordinates[1].second) {
-
+        if (coordinates[0].first.equals(coordinates[0].second) && coordinates[1].first.equals(coordinates[1].second)) {
+            for (i in coordinates[0].first + 1 until coordinates[1].first) {
+                val newPair = Pair(i, i)
+                coordinates.add(newPair)
+            }
+        } else if (coordinates[0].first - coordinates[0].second == coordinates[1].first - coordinates[1].second) {
+            var j = coordinates[0].second + 1
+            for (i in coordinates[0].first + 1 until coordinates[1].first) {
+                val newPair = Pair(i, j)
+                coordinates.add(newPair)
+                j += 1
+            }
+        } else {
+            var j = coordinates[0].second - 1
+            for (i in coordinates[0].first + 1 until coordinates[1].first) {
+                val newPair = Pair(i, j)
+                coordinates.add(newPair)
+                j -= 1
             }
         }
-
     }
 }
+
+
 
 
 
