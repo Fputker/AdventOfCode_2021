@@ -28,4 +28,21 @@ internal class Day5KtTest {
         )
         assertEquals(5, day5part1(input))
     }
+
+    @Test
+    fun `test diagonals`() {
+        val input = listOf(
+            "0,3 -> 2,1",
+            "5,5 -> 8,2",
+            "0,8 -> 6,2",
+            "1,1 -> 1,1"
+        )
+        val lines = input.map { inputStringToLine(it) }
+        assert(lines[0].isDiagonal())
+        assert(lines[1].isDiagonal())
+        assert(lines[2].isDiagonal())
+        assertEquals(false, lines[3].isDiagonal())
+    }
+
+
 }

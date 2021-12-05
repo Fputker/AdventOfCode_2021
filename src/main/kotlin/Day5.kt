@@ -13,7 +13,7 @@ fun main() {
     println(day5part1(listOfStrings))
 }
 
-fun day5part1(input: List<String>): Int{
+fun day5part1(input: List<String>): Int {
 
     val listOfLines = input.map { inputStringToLine(it) }.filter { it.isLine() }
     val allLinesCombined = listOfLines.flatMap { it.coordinates }
@@ -37,24 +37,48 @@ fun inputStringToLine(input: String): Line {
 data class Line(var coordinates: MutableList<Pair<Int, Int>>) {
 
     init {
-        coordinates.sortBy { it.first }
-        coordinates.sortBy { it.second}
-        if (coordinates[0].first.equals(coordinates[1].first)){
-            for (i in coordinates[0].second+1 until coordinates[1].second){
-                val newPair = Pair(coordinates[0].first, i)
-                coordinates.add(newPair)
-            }
+        if (coordinates[0].first.equals(coordinates[1].first)) {
+            coordinates.sortBy { it.second }
+            drawHorizontalLine()
         } else if (coordinates[0].second.equals(coordinates[1].second)) {
-            for (i in coordinates[0].first+1 until coordinates[1].first){
-                val newPair = Pair(i, coordinates[0].second)
-                coordinates.add(newPair)
-            }
+            coordinates.sortBy { it.first }
+            drawVerticalLine()
+        } else if (coordinates[0].first + coordinates[0].second == coordinates[1].first + coordinates[1].second) {
+            coordinates.sortBy { it.first }
         }
     }
 
-    fun isLine(): Boolean{
+    fun isLine(): Boolean {
         return coordinates.size > 2
     }
 
+    fun isDiagonal(): Boolean {
+        return ((coordinates[0].equals(coordinates[1]) == false) && ((coordinates[0].first + coordinates[0].second == coordinates[1].first + coordinates[1].second) || (coordinates[0].first == coordinates[0].second && coordinates[1].first == coordinates[1].second)))
+    }
+
+    fun drawHorizontalLine() {
+        for (i in coordinates[0].second + 1 until coordinates[1].second) {
+            val newPair = Pair(coordinates[0].first, i)
+            coordinates.add(newPair)
+        }
+    }
+
+    fun drawVerticalLine() {
+        for (i in coordinates[0].first + 1 until coordinates[1].first) {
+            val newPair = Pair(i, coordinates[0].second)
+            coordinates.add(newPair)
+        }
+    }
+
+    fun drawDiagonal() {
+        for (i in coordinates[0].first + 1 until coordinates[1].first) {
+            for (j in coordinates[0].second + 1 until coordinates[1].second) {
+
+            }
+        }
+
+    }
 }
+
+
 
