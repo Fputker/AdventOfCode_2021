@@ -7,10 +7,20 @@ step 4 calculate score of board
 */
 
 fun main() {
-    val numbersDrawn = readInput("day4")
-    val listOfBoards = readBoardsFromInput(readInput("day4_boards"))
+    val numbersDrawn = readInput("day4")[0].split(",").map { it.toInt() }
+    var listOfBoards = readBoardsFromInput(readInput("day4_boards")).map { BingoBoard(it) }
+    println("size of the list = ${listOfBoards.size}")
+    var i = 0
     for (number in numbersDrawn){
-        listOfBoards.map { BingoBoard(it) }
+         for (board in listOfBoards){
+             board.markNumber(number)
+             if(board.didIWin()){
+                 println("$i number=$number and sum=${board.sumOfUnmarkedNumbers()} the final score should be: ${board.sumOfUnmarkedNumbers()*number}")
+                listOfBoards = listOfBoards.minusElement(board)
+                 println("new size of the list = ${listOfBoards.size}")
+             }
+             i+=1
+         }
     }
 }
 
