@@ -48,7 +48,15 @@ data class Line(var coordinates: MutableList<Pair<Int, Int>>) {
     }
 
     fun isLine(): Boolean {
-        return coordinates.size > 2
+        return isHorizontalLine() || isVerticalLine() || isDiagonal()
+    }
+
+    fun isHorizontalLine():Boolean{
+        return coordinates[0].second == coordinates[1].second
+    }
+
+    fun isVerticalLine():Boolean{
+        return coordinates[0].first == coordinates[1].first
     }
 
     fun isDiagonal(): Boolean {

@@ -45,7 +45,7 @@ internal class Day5KtTest {
     }
 
     @Test
-    fun `complete test with diagonals`(){
+    fun `complete test with diagonals`() {
         val input = listOf(
             "0,9 -> 5,9", //horizontal
             "8,0 -> 0,8", //diagonal
@@ -60,5 +60,4 @@ internal class Day5KtTest {
         )
         assertEquals(12, day5part1(input))
     }
-
 }
