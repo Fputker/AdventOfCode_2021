@@ -1,59 +1,40 @@
-fun createFishList(input: String): MutableList<Int> {
-    return input.split(",").map { it.toInt() } as MutableList<Int>
+fun createNewFishList(input: String): List<Long> {
+    val inputInts = input.split(",").map { it.toLong() }
+    val fishlist = listOf(
+        inputInts.count { it == 0L }.toLong(),
+        inputInts.count { it == 1L }.toLong(),
+        inputInts.count { it == 2L }.toLong(),
+        inputInts.count { it == 3L }.toLong(),
+        inputInts.count { it == 4L }.toLong(),
+        inputInts.count { it == 5L }.toLong(),
+        inputInts.count { it == 6L }.toLong(),
+        inputInts.count { it == 7L }.toLong(),
+        inputInts.count { it == 8L }.toLong())
+    return fishlist
 }
 
-fun day6part1() {
-    val startingFish = createFishList(readInput("Day6")[0])
-    println(ageXamountOfDays(80, startingFish).size)
-}
-
-fun ageXamountOfDays(nrOfDays: Int, startingFish: MutableList<Int>): List<Int> {
-    var copy: MutableList<Int> = startingFish
+fun ageXamountOfDays(nrOfDays: Int, startingFish: MutableList<Long>): List<Long> {
+    var copy: MutableList<Long> = startingFish
     for (day in 1..nrOfDays) {
-        copy = ageOneDay(copy)
-        println(copy)
+        copy = ageAday(copy) as MutableList<Long>
     }
     return copy
 }
 
-fun ageOneDay(listOfFish: MutableList<Int>): MutableList<Int> {
-    val aged = listOfFish.map { it - 1 } as MutableList<Int>
-    return processAgedFish(aged)
-}
-
-fun processAgedFish(listOfFish: MutableList<Int>): MutableList<Int> {
-    var newlistOfFish = listOfFish
-    for (i in 1..listOfFish.count { it == -1 }) {
-        newlistOfFish.add(8)
-    }
-    newlistOfFish = newlistOfFish.map { if (it == -1) 6 else it } as MutableList<Int>
-    return newlistOfFish
-}
-
-fun createNewFishList(input: String): List<Int> {
-    val inputInts = input.split(",").map { it.toInt() }
-    val fishlist = listOf(
-        inputInts.count { it == 0 },
-        inputInts.count { it == 1 },
-        inputInts.count { it == 2 },
-        inputInts.count { it == 3 },
-        inputInts.count { it == 4 },
-        inputInts.count { it == 5 },
-        inputInts.count { it == 6 },
-        inputInts.count { it == 7 },
-        inputInts.count { it == 8 })
-    return fishlist
-}
-
-fun ageAday(fishList: MutableList<Int>): List<Int> {
+fun ageAday(fishList: MutableList<Long>): List<Long> {
     val fishAt0 = fishList[0]
     for (i in 0..fishList.size-2) {
         fishList[i] = fishList[i+1]
     }
-    fishList[8]=fishAt0
+    fishList[6] = fishList[6] +fishAt0
+    fishList[8] = fishAt0
     return fishList
 }
 
 fun main() {
-    day6part1()
+    val startingFish1 = createNewFishList(readInput("Day6")[0])
+    println("answer to part 1 = ${ageXamountOfDays(80, startingFish1 as MutableList<Long>).sum()}")
+    val startingFish2 = createNewFishList(readInput("Day6")[0])
+    println("answer to part 2 = ${ageXamountOfDays(256, startingFish2 as MutableList<Long>).sum()}")
+
 }
