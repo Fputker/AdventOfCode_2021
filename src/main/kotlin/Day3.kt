@@ -31,8 +31,8 @@ fun part2(inputList: List<List<Int>>): Int {
 
 fun findMostCommonBits(inputList: List<List<Int>>): List<List<Int>> {
     var reducingList = inputList
-    for (i in 0..inputList.size - 1) {
-        var arrayOfMostCommonBits = determineMostCommonBits(reducingList)
+    for (i in inputList.indices) {
+        val arrayOfMostCommonBits = determineMostCommonBits(reducingList)
         val bitToFilterFor = Pair(arrayOfMostCommonBits[i], i)
         println("bit=${bitToFilterFor.first}, position is ${bitToFilterFor.second}")
         reducingList = filterForBitInPosition(bitToFilterFor, reducingList)
@@ -47,15 +47,14 @@ fun findMostCommonBits(inputList: List<List<Int>>): List<List<Int>> {
 
 private fun findLeastCommonBits(inputList: List<List<Int>>): List<List<Int>> {
     var reducingList = inputList
-    for (i in 0..inputList.size - 1) {
-        var arrayOfLeastCommonBits = determineLeastCommonBits(reducingList)
+    for (i in inputList.indices) {
+        val arrayOfLeastCommonBits = determineLeastCommonBits(reducingList)
         val bitToFilterFor = Pair(arrayOfLeastCommonBits[i], i)
         println("bit=${bitToFilterFor.first}, position is ${bitToFilterFor.second}")
         reducingList = filterForBitInPosition(bitToFilterFor, reducingList)
         if (reducingList.size == 1) {
             return reducingList
         }
-
         println(reducingList)
     }
     return reducingList
