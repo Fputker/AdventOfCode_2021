@@ -34,10 +34,10 @@ fun getSegmentMapping(signalList: List<String>): List<Pair<Int, String>> {
         Pair(8, signalList.filter { it.length == 7 }[0])
     )
 
-    val segmentsAsChars = signalList.map { it.toList() }.flatMap { it }
+    val segmentsAsChars = signalList.map { it.toList() }.flatten()
     val segmentCounts = segmentsAsChars.map { char -> Pair(char, segmentsAsChars.count { it == char }) }.distinct()
 
-    var mapOfBitsToSegments = mutableListOf(
+    val mapOfBitsToSegments = mutableListOf(
         Pair("c", segmentCounts.find { it.second == 9 }?.first.toString()),
         Pair("e", segmentCounts.find { it.second == 4 }?.first.toString()),
         Pair("f", segmentCounts.find { it.second == 6 }?.first.toString())

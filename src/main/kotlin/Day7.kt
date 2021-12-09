@@ -24,6 +24,8 @@ fun getNthTriangleNumber(n: Int): Int{
 fun main(){
     val input = readInput("Day7")[0].split(",").map { it.toInt() }
     mapTotalConsumptionToPositions(input)
+    println("jerres function gives ${input.map { abs(it - (determineMedianPosition(input)))} .sum()}")
+
 }
 
 fun mapTotalConsumptionToPositions(input: List<Int>): Int {
