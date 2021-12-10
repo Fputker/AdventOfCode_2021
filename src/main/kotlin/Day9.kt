@@ -28,7 +28,6 @@ fun findLowPointsInLine(newMap: List<List<Int>>, i: Int): MutableList<Coordinate
     return coordinates
 }
 
-
 data class Coordinate(val X: Int, val Y: Int, val height: Int, val left: Int? = null, val right: Int? = null) {
 
     fun determineIfUpDownLowpoint(heightMap: List<List<Int>>): Boolean {
@@ -48,94 +47,104 @@ data class Coordinate(val X: Int, val Y: Int, val height: Int, val left: Int? = 
         return false
     }
 
-    fun leftIslarger() = left!! > height && left != 9
-
-    fun rightIslarger() = right!! > height && right != 9
-
-    fun topIsLarger(heightMap: List<List<Int>>) = if (Y>0) {heightMap[Y-1][X] > height && heightMap[Y-1][X] != 9} else false
-
-    fun bottomIsLarger(heightMap: List<List<Int>>) = if (Y < heightMap.size) {heightMap[Y+1][X] > height && heightMap[Y+1][X] != 9} else false
-
-    fun findLeftBasinCoordinates(heightMap: List<List<Int>>, coordinates: MutableList<Coordinate>): List<Coordinate> {
-        val newCoordinates = coordinates
-        coordinates.forEach {
-            if (it.leftIslarger()) {
-                val newCoordinate = it.left?.let { it1 -> Coordinate(X = it.X - 1, Y = it.Y, height = it1, left = heightMap[it.Y][it.X - 1], right = it.height) }
-                if (newCoordinate != null) {
-                    newCoordinates.add(newCoordinate)
-                }
-                if (newCoordinates.equals(coordinates)) {
-                    return coordinates
-                } else {
-                    this.findLeftBasinCoordinates(heightMap, newCoordinates)
-                }
-            }
-        }
-        return coordinates
+    fun leftIslarger() = if (left != null) {
+        (left > height && left != 9)
+    } else {
+        false
     }
 
-    fun findRightBasinCoordinates(heightMap: List<List<Int>>, coordinates: MutableList<Coordinate>): List<Coordinate> {
-        val newCoordinates = coordinates
-        coordinates.forEach {
-            if (it.rightIslarger()) {
-                val newCoordinate = it.right?.let { it1 -> Coordinate(X = it.X + 1, Y = it.Y, height = it1, left = heightMap[it.Y][it.X + 1], right = it.height) }
-                if (newCoordinate != null) {
+    fun rightIslarger() = if (right != null) {
+        (right > height && right != 9)
+    } else {
+        false
+    }
+
+    fun topIsLarger(heightMap: List<List<Int>>) = if (Y > 0) {
+        heightMap[Y - 1][X] > height && heightMap[Y - 1][X] != 9
+    } else false
+
+    fun bottomIsLarger(heightMap: List<List<Int>>) = if (Y < heightMap.size) {
+        heightMap[Y + 1][X] > height && heightMap[Y + 1][X] != 9
+    } else false
+
+    fun findLeftBasinCoordinates(heightMap: List<List<Int>>, coordinates: List<Coordinate>): List<Coordinate> {
+        val newCoordinates = coordinates.toMutableList()
+        for (i in 0..coordinates.size - 1) {
+            if (coordinates[i].leftIslarger()) {
+                val newCoordinate = coordinates[i].left?.let { it1 -> Coordinate(X = coordinates[i].X - 1, Y = coordinates[i].Y, height = it1, left = heightMap[coordinates[i].Y][coordinates[i].X - 2], right = coordinates[i].height) }
+                if (newCoordinate != null && !newCoordinates.contains(newCoordinate)) {
                     newCoordinates.add(newCoordinate)
-                }
-                if (newCoordinates.equals(coordinates)) {
-                    return coordinates
-                } else {
-                    this.findRightBasinCoordinates(heightMap, newCoordinates)
+                    newCoordinates.addAll(findLeftBasinCoordinates(heightMap, newCoordinates))
                 }
             }
         }
-        return coordinates
+        return newCoordinates.distinct()
+    }
+
+    fun findRightBasinCoordinates(heightMap: List<List<Int>>, coordinates: List<Coordinate>): List<Coordinate> {
+        val newCoordinates = coordinates.toMutableList()
+        for (i in 0..coordinates.size - 1) {
+            if (coordinates[i].rightIslarger()) {
+                val newCoordinate = coordinates[i].right?.let { it1 -> Coordinate(X = coordinates[i].X + 1, Y = coordinates[i].Y, height = it1, left = coordinates[i].height, right = heightMap[coordinates[i].Y][coordinates[i].X + 2]) }
+                if (newCoordinate != null && !newCoordinates.contains(newCoordinate)) {
+                    newCoordinates.add(newCoordinate)
+                    newCoordinates.addAll(findRightBasinCoordinates(heightMap, newCoordinates))
+                }
+            }
+        }
+        return newCoordinates.distinct()
     }
 
     fun findTopBasinCoordinates(heightMap: List<List<Int>>, coordinates: MutableList<Coordinate>): List<Coordinate> {
         val newCoordinates = coordinates
-        coordinates.forEach {
-            if (it.topIsLarger(heightMap)) {
-                val newCoordinate = Coordinate(X = it.X, Y = it.Y-1, height = heightMap[Y-1][X], left = heightMap[it.Y-1][it.X-1], right = heightMap[it.Y-1][it.X+1])
-                newCoordinates.add(newCoordinate)
-                if (newCoordinates.equals(coordinates)) {
-                    return coordinates
+        for (i in 0..coordinates.size - 1) {
+            if (coordinates[i].topIsLarger(heightMap)) {
+                val newCoordinate: Coordinate = if (X + 1 < heightMap[0].size - 1 && coordinates[i].X > 0) {
+                    Coordinate(X = coordinates[i].X, Y = coordinates[i].Y - 1, height = heightMap[Y - 1][X], left = heightMap[coordinates[i].Y - 1][coordinates[i].X - 1], right = heightMap[coordinates[i].Y - 1][coordinates[i].X + 1])
+                } else if (coordinates[i].X + 1 > heightMap[0].size - 1) {
+                    Coordinate(X = coordinates[i].X, Y = coordinates[i].Y - 1, height = heightMap[Y - 1][X], left = heightMap[coordinates[i].Y - 1][coordinates[i].X - 1], right = null)
                 } else {
-                    this.findTopBasinCoordinates(heightMap, newCoordinates)
+                    Coordinate(X = coordinates[i].X, Y = coordinates[i].Y - 1, height = heightMap[Y - 1][X], left = null, right = heightMap[coordinates[i].Y - 1][coordinates[i].X + 1])
+                }
+                if (!newCoordinates.contains(newCoordinate)) {
+                    newCoordinates.add(newCoordinate)
+                    newCoordinates.addAll(findTopBasinCoordinates(heightMap, newCoordinates))
                 }
             }
         }
-        return coordinates
+        return coordinates.distinct()
     }
 
     fun findBottomBasinCoordinates(heightMap: List<List<Int>>, coordinates: MutableList<Coordinate>): List<Coordinate> {
         val newCoordinates = coordinates
-        coordinates.forEach {
-            if (it.bottomIsLarger(heightMap)) {
-                val newCoordinate = Coordinate(X = it.X, Y = it.Y+1, height = heightMap[Y+1][X], left = heightMap[it.Y+1][it.X-1], right = heightMap[it.Y+1][it.X+1])
-                newCoordinates.add(newCoordinate)
-                if (newCoordinates.equals(coordinates)) {
-                    return coordinates
+        for (i in 0..coordinates.size - 1) {
+            if (coordinates[i].bottomIsLarger(heightMap)) {
+                val newCoordinate: Coordinate = if (X + 1 < heightMap[0].size - 1 && coordinates[i].X > 0) {
+                    Coordinate(X = coordinates[i].X, Y = coordinates[i].Y + 1, height = heightMap[Y + 1][X], left = heightMap[coordinates[i].Y + 1][coordinates[i].X - 1], right = heightMap[coordinates[i].Y + 1][coordinates[i].X + 1])
+                } else if (coordinates[i].X + 1 > heightMap[0].size - 1) {
+                    Coordinate(X = coordinates[i].X, Y = coordinates[i].Y + 1, height = heightMap[Y + 1][X], left = heightMap[coordinates[i].Y + 1][coordinates[i].X - 1], right = null)
                 } else {
-                    this.findBottomBasinCoordinates(heightMap, newCoordinates)
+                    Coordinate(X = coordinates[i].X, Y = coordinates[i].Y + 1, height = heightMap[Y + 1][X], left = null, right = heightMap[coordinates[i].Y + 1][coordinates[i].X + 1])
+                }
+                if (!newCoordinates.contains(newCoordinate)) {
+                    newCoordinates.add(newCoordinate)
+                    newCoordinates.addAll(findBottomBasinCoordinates(heightMap, newCoordinates))
                 }
             }
         }
-        return coordinates
+        return coordinates.distinct()
     }
 
-
-
-    fun findVerticalBasinCoordinates(): List<Coordinate> {
-        return listOf()
-    }
-}
-
-data class Basin(var coordinates: List<Coordinate>) {
-    val id = this.hashCode()
-
-    fun mapCompleteBasin(heightMap: List<List<Int>>, coordinates: MutableList<Coordinate>) {
-
+    fun mapCompleteBasin(heightMap: List<List<Int>>, coordinates: List<Coordinate>): List<Coordinate> {
+        val newCoordinates = coordinates.toMutableList()
+        coordinates.forEach {
+            it.findLeftBasinCoordinates(heightMap, newCoordinates)
+            it.findRightBasinCoordinates(heightMap, newCoordinates)
+            it.findBottomBasinCoordinates(heightMap, newCoordinates)
+            it.findTopBasinCoordinates(heightMap, newCoordinates)
+            newCoordinates.addAll(mapCompleteBasin(heightMap, newCoordinates))
+        }
+        return newCoordinates.distinct()
     }
 }
 
