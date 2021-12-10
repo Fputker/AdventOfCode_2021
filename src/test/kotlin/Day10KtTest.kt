@@ -31,4 +31,40 @@ internal class Day10KtTest {
         assertEquals(26397L, calculateScore(list))
     }
 
+    @Test
+    fun `test complete part 2`() {
+        val input = listOf("[({(<(())[]>[[{[]{<()<>>",
+            "[(()[<>])]({[<{<<[]>>(",
+            "{([(<{}[<>[]}>{[]{[(<()>",
+            "(((({<>}<{<{<>}{[]{[]{}",
+            "[[<[([]))<([[{}[[()]]]",
+            "[{[{({}]{}}([{[{{{}}([]",
+            "{<[[]]>}<{[{[{[]{()[[[]",
+            "[<(<(<(<{}))><([]([]()",
+            "<{([([[(<>()){}]>(<<{{",
+            "<{([{{}}[<[[[<>{}]]]>[]]")
+
+        val list = input.map { findInvalidClose(it) }.filter { it != '1' }
+
+        assertEquals(listOf('}',')',']',')','>'), list)
+
+        assertEquals(26397L, calculateScore(list))
+    }
+
+    @Test
+    fun `test completion`(){
+        val input = "[({(<(())[]>[[{[]{<()<>>"
+        val incomplete = findIncompleteLines(input)
+        assertEquals("[({([[{{".toCharArray().toList(), incomplete)
+
+
+        assertEquals("}}]])})]".toCharArray().toList(), completeSequence(incomplete) )
+    }
+
+    @Test
+    fun `test part 2 score`(){
+        val input = listOf(']',')','}','>')
+        assertEquals(294, scoreforLine(input) )
+    }
+
 }
