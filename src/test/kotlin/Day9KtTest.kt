@@ -94,7 +94,7 @@ internal class Day9KtTest {
         val newMap = testInput.map { string -> string.toCharArray().map { it.digitToInt() } }
         val startList = mutableListOf(Coordinate(1,0,1, 2, 9))
 
-        assertEquals(3, startList[0].mapCompleteBasin(newMap, startList).size)
+        assertEquals(3, mapCompleteBasin(newMap, startList).size)
     }
 
     @Test
@@ -109,8 +109,8 @@ internal class Day9KtTest {
 
         val newMap = testInput.map { string -> string.toCharArray().map { it.digitToInt() } }
         val startList = mutableListOf(Coordinate(9,0,0, 1, null))
-
-        assertEquals(9, startList[0].mapCompleteBasin(newMap, startList).size)
+        val result = mapCompleteBasin(newMap, startList)
+        assertEquals(9, result.size)
     }
 
 }
