@@ -158,40 +158,41 @@ data class Coordinate(val X: Int, val Y: Int, val height: Int, val left: Int? = 
 }
 
 fun mapCompleteBasin(heightMap: List<List<Int>>, coordinates: List<Coordinate>): List<Coordinate> {
-    val newCoordinates = coordinates.toMutableList()
-    var intermediateCoordinates: List<Coordinate>
+    var newCoordinates = coordinates.toMutableList()
     for (i in 0..coordinates.size - 1) {
         val xy = coordinates[i]
-        intermediateCoordinates = xy.findLeftBasinCoordinates(heightMap, newCoordinates).distinct()
-        newCoordinates.addAll(intermediateCoordinates.filter { !newCoordinates.contains(it) })
 
-        intermediateCoordinates = xy.findRightBasinCoordinates(heightMap, newCoordinates).distinct()
-        newCoordinates.addAll(intermediateCoordinates.filter { !newCoordinates.contains(it) })
+        newCoordinates += xy.findLeftBasinCoordinates(heightMap, newCoordinates).distinct()
+        newCoordinates += xy.findRightBasinCoordinates(heightMap, newCoordinates).distinct()
+        newCoordinates += xy.findBottomBasinCoordinates(heightMap, newCoordinates).distinct()
+        newCoordinates += xy.findTopBasinCoordinates(heightMap, newCoordinates).distinct()
 
-        intermediateCoordinates = xy.findBottomBasinCoordinates(heightMap, newCoordinates).distinct()
-        newCoordinates.addAll(intermediateCoordinates.filter { !newCoordinates.contains(it) })
+        newCoordinates = newCoordinates.distinctBy { it }.toMutableList()
 
-        intermediateCoordinates = xy.findTopBasinCoordinates(heightMap, newCoordinates).distinct()
-        newCoordinates.addAll(intermediateCoordinates.filter { !newCoordinates.contains(it) })
-
-        intermediateCoordinates = mapCompleteBasin(heightMap, newCoordinates.filter { !coordinates.contains(it) })
-
-        newCoordinates.addAll(intermediateCoordinates.filter { !newCoordinates.contains(it) })
+        if(newCoordinates.size != coordinates.size){
+            newCoordinates += mapCompleteBasin(heightMap, newCoordinates)
+        }
     }
-    return newCoordinates.distinct()
+    return newCoordinates.distinctBy { it}
 }
 
 fun main() {
     val input = readInput("day9")
     val lowpoints = createCoordinateListOfXYlowpoints(input)
-    val lowpointHeights = lowpoints.map { it.height + 1 }
+    var lowpointHeights = lowpoints.map { it.height + 1 }
     println("part1 = ${lowpointHeights.sum()}")
 
     val newInput = input.map { string -> string.toCharArray().map { it.digitToInt() } }
 
-    val basins = lowpoints.map{ mapCompleteBasin(newInput, listOf(it)) }.sortedBy { it.size }
-    val basin1 = basins[basins.size-1]
-    val basin2 = basins[basins.size-2]
-    val basin3 = basins[basins.size-3]
+    val result = mutableListOf<List<Coordinate>>()
+    for (i in 0..lowpoints.size -1) {
+        result.add(mapCompleteBasin(newInput, listOf(lowpoints[i])))
+        println(i)
+    }
+    val ordered = result.sortedBy { it.size }
+
+    val basin1 = ordered[result.size-1]
+    val basin2 = ordered[result.size-2]
+    val basin3 = ordered[result.size-3]
     println("answer to part 2 = ${basin1.size * basin2.size * basin3.size}")
 }
